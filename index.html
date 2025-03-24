@@ -1,0 +1,2275 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiszki do nauki angielskiego</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #27ae60;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2rem;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        .level-selector {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .level-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .level-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .level-btn {
+            padding: 0.5rem 1rem;
+            background-color: var(--light-color);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .level-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .level-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .lesson-selector {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .lesson-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .lesson-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .lesson-btn {
+            padding: 0.5rem 1rem;
+            background-color: var(--light-color);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .lesson-btn:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .lesson-btn.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .flashcards-container {
+            margin: 2rem 0;
+        }
+        
+        .flashcards-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .flashcards-title span {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        .progress-container {
+            margin-bottom: 1rem;
+            background-color: var(--light-color);
+            border-radius: 4px;
+            height: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--success-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+        
+        .action-btn {
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .action-btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .flashcards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .flashcard {
+            height: 150px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .flashcard-front {
+            background-color: white;
+            color: var(--dark-color);
+        }
+        
+        .flashcard-back {
+            background-color: var(--secondary-color);
+            color: white;
+            transform: rotateY(180deg);
+        }
+        
+        .word {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .pronunciation {
+            font-style: italic;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+        }
+        
+        .sound-btn {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+        
+        .sound-btn:hover {
+            opacity: 1;
+        }
+        
+        .flashcard-note {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 768px) {
+            .flashcards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+            
+            .flashcard {
+                height: 120px;
+            }
+            
+            .word {
+                font-size: 1.2rem;
+            }
+            
+            .pronunciation {
+                font-size: 0.8rem;
+            }
+            
+            .level-buttons, .lesson-buttons {
+                gap: 5px;
+            }
+            
+            .level-btn, .lesson-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .flashcards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            }
+            
+            .flashcard {
+                height: 100px;
+            }
+            
+            .word {
+                font-size: 1rem;
+            }
+            
+            .pronunciation {
+                font-size: 0.7rem;
+            }
+            
+            .level-buttons, .lesson-buttons {
+                justify-content: center;
+            }
+        }
+        
+        /* Animation for adding new cards */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .flashcard {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        /* Loader animation */
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .loader-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Learned card style */
+        .flashcard.learned .flashcard-inner {
+            box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+            border: 2px solid var(--success-color);
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--success-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Fiszki do nauki angielskiego</h1>
+        <div class="subtitle">Ucz się angielskiego krok po kroku</div>
+    </header>
+    
+    <div class="container">
+        <div class="level-selector">
+            <h2 class="level-title">Wybierz poziom:</h2>
+            <div class="level-buttons">
+                <button class="level-btn active" data-level="beginner">Początkujący</button>
+                <button class="level-btn" data-level="elementary">Podstawowy</button>
+                <button class="level-btn" data-level="intermediate">Średniozaawansowany</button>
+                <button class="level-btn" data-level="advanced">Zaawansowany</button>
+            </div>
+        </div>
+        
+        <div class="lesson-selector">
+            <h2 class="lesson-title">Wybierz lekcję:</h2>
+            <div class="lesson-buttons" id="lesson-buttons">
+                <!-- Tutaj będą dynamicznie dodawane przyciski lekcji -->
+            </div>
+        </div>
+        
+        <div class="flashcards-container">
+            <h2 class="flashcards-title">
+                <div>Lekcja: <span id="current-lesson-title">Wybierz lekcję</span></div>
+                <div id="progress-info">0/0</div>
+            </h2>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-btn" id="reset-progress">
+                    <span>&#8635;</span> Resetuj postęp
+                </button>
+                <button class="action-btn" id="mark-all-learned">
+                    <span>&#10003;</span> Oznacz wszystkie jako nauczone
+                </button>
+                <button class="action-btn" id="shuffle-cards">
+                    <span>&#8646;</span> Wymieszaj karty
+                </button>
+            </div>
+            
+            <div class="flashcards-grid" id="flashcards-grid">
+                <!-- Tutaj będą dynamicznie dodawane fiszki -->
+            </div>
+            
+            <div class="loader" id="loader">
+                <div class="loader-spinner"></div>
+                <p>Ładowanie fiszek...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal" id="info-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal">&times;</span>
+            <h2 class="modal-title">Jak korzystać z fiszek</h2>
+            <p>1. Wybierz poziom i lekcję, której chcesz się uczyć.</p>
+            <p>2. Kliknij na fiszkę, aby ją obrócić i zobaczyć tłumaczenie.</p>
+            <p>3. Kliknij na ikonę głośnika, aby usłyszeć wymowę.</p>
+            <p>4. Oznaczaj poznane słowa, aby śledzić swój postęp.</p>
+            <p>5. Możesz resetować postęp lub wymieszać karty w dowolnym momencie.</p>
+        </div>
+    </div>
+    
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+    
+    <script>
+        // Dane lekcji - to jest przykładowa struktura, którą będziesz uzupełniać
+        const lessonsData = {
+            beginner: [
+                {
+                    id: 'beginner-1',
+                    title: 'Lekcja 1 - Podstawowe słowa',
+                    words: [
+                        {
+                            eng: 'Hello',
+                            pl: 'Cześć',
+                            pronunciation: '/həˈləʊ/'
+                        },
+                        {
+                            eng: 'Goodbye',
+                            pl: 'Do widzenia',
+                            pronunciation: '/ˌɡʊdˈbaɪ/'
+                        },
+                        {
+                            eng: 'Yes',
+                            pl: 'Tak',
+                            pronunciation: '/jes/'
+                        },
+                        {
+                            eng: 'No',
+                            pl: 'Nie',
+                            pronunciation: '/nəʊ/'
+                        },
+                        {
+                            eng: 'Please',
+                            pl: 'Proszę',
+                            pronunciation: '/pliːz/'
+                        },
+                        {
+                            eng: 'Thank you',
+                            pl: 'Dziękuję',
+                            pronunciation: '/θæŋk juː/'
+                        },
+                        {
+                            eng: 'Sorry',
+                            pl: 'Przepraszam',
+                            pronunciation: '/ˈsɒri/'
+                        },
+                        {
+                            eng: 'Excuse me',
+                            pl: 'Przepraszam (zwracając uwagę)',
+                            pronunciation: '/ɪkˈskjuːz miː/'
+                        },
+                        {
+                            eng: 'Good morning',
+                            pl: 'Dzień dobry (rano)',
+                            pronunciation: '/ɡʊd ˈmɔːnɪŋ/'
+                        },
+                        {
+                            eng: 'Good afternoon',
+                            pl: 'Dzień dobry (po południu)',
+                            pronunciation: '/ɡʊd ˌɑːftəˈnuːn/'
+                        },
+                        {
+                            eng: 'Good evening',
+                            pl: 'Dobry wieczór',
+                            pronunciation: '/ɡʊd ˈiːvnɪŋ/'
+                        },
+                        {
+                            eng: 'Good night',
+                            pl: 'Dobranoc',
+                            pronunciation: '/ɡʊd naɪt/'
+                        },
+                        {
+                            eng: 'How are you?',
+                            pl: 'Jak się masz?',
+                            pronunciation: '/haʊ ɑː juː/'
+                        },
+                        {
+                            eng: 'I am fine',
+                            pl: 'Mam się dobrze',
+                            pronunciation: '/aɪ æm faɪn/'
+                        },
+                        {
+                            eng: 'What is your name?',
+                            pl: 'Jak masz na imię?',
+                            pronunciation: '/wɒt ɪz jɔː neɪm/'
+                        },
+                        {
+                            eng: 'My name is...',
+                            pl: 'Mam na imię...',
+                            pronunciation: '/maɪ neɪm ɪz.../'
+                        },
+                        {
+                            eng: 'Nice to meet you',
+                            pl: 'Miło cię poznać',
+                            pronunciation: '/naɪs tuː miːt juː/'
+                        },
+                        {
+                            eng: 'Where are you from?',
+                            pl: 'Skąd jesteś?',
+                            pronunciation: '/weər ɑː juː frɒm/'
+                        },
+                        {
+                            eng: 'I am from...',
+                            pl: 'Jestem z...',
+                            pronunciation: '/aɪ æm frɒm.../'
+                        },
+                        {
+                            eng: 'Help',
+                            pl: 'Pomoc',
+                            pronunciation: '/help/'
+                        }
+                    ]
+                },
+                {
+                    id: 'beginner-2',
+                    title: 'Lekcja 2 - Liczby',
+                    words: [
+                        {
+                            eng: 'One',
+                            pl: 'Jeden',
+                            pronunciation: '/wʌn/'
+                        },
+                        {
+                            eng: 'Two',
+                            pl: 'Dwa',
+                            pronunciation: '/tuː/'
+                        },
+                        {
+                            eng: 'Three',
+                            pl: 'Trzy',
+                            pronunciation: '/θriː/'
+                        },
+                        {
+                            eng: 'Four',
+                            pl: 'Cztery',
+                            pronunciation: '/fɔː/'
+                        },
+                        {
+                            eng: 'Five',
+                            pl: 'Pięć',
+                            pronunciation: '/faɪv/'
+                        },
+                        {
+                            eng: 'Six',
+                            pl: 'Sześć',
+                            pronunciation: '/sɪks/'
+                        },
+                        {
+                            eng: 'Seven',
+                            pl: 'Siedem',
+                            pronunciation: '/ˈsev.ən/'
+                        },
+                        {
+                            eng: 'Eight',
+                            pl: 'Osiem',
+                            pronunciation: '/eɪt/'
+                        },
+                        {
+                            eng: 'Nine',
+                            pl: 'Dziewięć',
+                            pronunciation: '/naɪn/'
+                        },
+                        {
+                            eng: 'Ten',
+                            pl: 'Dziesięć',
+                            pronunciation: '/ten/'
+                        },
+                        {
+                            eng: 'Twenty',
+                            pl: 'Dwadzieścia',
+                            pronunciation: '/ˈtwenti/'
+                        },
+                        {
+                            eng: 'Thirty',
+                            pl: 'Trzydzieści',
+                            pronunciation: '/ˈθɜːti/'
+                        },
+                        {
+                            eng: 'Forty',
+                            pl: 'Czterdzieści',
+                            pronunciation: '/ˈfɔːti/'
+                        },
+                        {
+                            eng: 'Fifty',
+                            pl: 'Pięćdziesiąt',
+                            pronunciation: '/ˈfɪfti/'
+                        },
+                        {
+                            eng: 'Sixty',
+                            pl: 'Sześćdziesiąt',
+                            pronunciation: '/ˈsɪksti/'
+                        },
+                        {
+                            eng: 'Seventy',
+                            pl: 'Siedemdziesiąt',
+                            pronunciation: '/ˈsevənti/'
+                        },
+                        {
+                            eng: 'Eighty',
+                            pl: 'Osiemdziesiąt',
+                            pronunciation: '/ˈeɪti/'
+                        },
+                        {
+                            eng: 'Ninety',
+                            pl: 'Dziewięćdziesiąt',
+                            pronunciation: '/ˈnaɪnti/'
+                        },
+                        {
+                            eng: 'One hundred',
+                            pl: 'Sto',
+                            pronunciation: '/wʌn ˈhʌndrəd/'
+                        },
+                        {
+                            eng: 'One thousand',
+                            pl: 'Tysiąc',
+                            pronunciation: '/wʌn ˈθaʊzənd/'
+                        }
+                    ]
+                },
+                {
+                    id: 'beginner-3',
+                    title: 'Lekcja 3 - Kolory',
+                    words: [
+                        {
+                            eng: 'Red',
+                            pl: 'Czerwony',
+                            pronunciation: '/red/'
+                        },
+                        {
+                            eng: 'Blue',
+                            pl: 'Niebieski',
+                            pronunciation: '/bluː/'
+                        },
+                        {
+                            eng: 'Green',
+                            pl: 'Zielony',
+                            pronunciation: '/ɡriːn/'
+                        },
+                        {
+                            eng: 'Yellow',
+                            pl: 'Żółty',
+                            pronunciation: '/ˈjeləʊ/'
+                        },
+                        {
+                            eng: 'Black',
+                            pl: 'Czarny',
+                            pronunciation: '/blæk/'
+                        },
+                        {
+                            eng: 'White',
+                            pl: 'Biały',
+                            pronunciation: '/waɪt/'
+                        },
+                        {
+                            eng: 'Orange',
+                            pl: 'Pomarańczowy',
+                            pronunciation: '/ˈɒrɪndʒ/'
+                        },
+                        {
+                            eng: 'Purple',
+                            pl: 'Fioletowy',
+                            pronunciation: '/ˈpɜːpl/'
+                        },
+                        {
+                            eng: 'Pink',
+                            pl: 'Różowy',
+                            pronunciation: '/pɪŋk/'
+                        },
+                        {
+                            eng: 'Brown',
+                            pl: 'Brązowy',
+                            pronunciation: '/braʊn/'
+                        },
+                        {
+                            eng: 'Grey',
+                            pl: 'Szary',
+                            pronunciation: '/ɡreɪ/'
+                        },
+                        {
+                            eng: 'Silver',
+                            pl: 'Srebrny',
+                            pronunciation: '/ˈsɪlvə/'
+                        },
+                        {
+                            eng: 'Gold',
+                            pl: 'Złoty',
+                            pronunciation: '/ɡəʊld/'
+                        },
+                        {
+                            eng: 'Light blue',
+                            pl: 'Jasnoniebieski',
+                            pronunciation: '/laɪt bluː/'
+                        },
+                        {
+                            eng: 'Dark blue',
+                            pl: 'Ciemnoniebieski',
+                            pronunciation: '/dɑːk bluː/'
+                        },
+                        {
+                            eng: 'Light green',
+                            pl: 'Jasnozielony',
+                            pronunciation: '/laɪt ɡriːn/'
+                        },
+                        {
+                            eng: 'Dark green',
+                            pl: 'Ciemnozielony',
+                            pronunciation: '/dɑːk ɡriːn/'
+                        },
+                        {
+                            eng: 'Navy blue',
+                            pl: 'Granatowy',
+                            pronunciation: '/ˈneɪvi bluː/'
+                        },
+                        {
+                            eng: 'Turquoise',
+                            pl: 'Turkusowy',
+                            pronunciation: '/ˈtɜːkwɔɪz/'
+                        },
+                        {
+                            eng: 'Beige',
+                            pl: 'Beżowy',
+                            pronunciation: '/beɪʒ/'
+                        }
+                    ]
+                },
+                {
+                    id: 'beginner-4',
+                    title: 'Lekcja 4 - Jedzenie',
+                    words: [
+                        {
+                            eng: 'Apple',
+                            pl: 'Jabłko',
+                            pronunciation: '/ˈæpl/'
+                        },
+                        {
+                            eng: 'Banana',
+                            pl: 'Banan',
+                            pronunciation: '/bəˈnɑːnə/'
+                        },
+                        {
+                            eng: 'Bread',
+                            pl: 'Chleb',
+                            pronunciation: '/bred/'
+                        },
+                        {
+                            eng: 'Butter',
+                            pl: 'Masło',
+                            pronunciation: '/ˈbʌtə/'
+                        },
+                        {
+                            eng: 'Cheese',
+                            pl: 'Ser',
+                            pronunciation: '/tʃiːz/'
+                        },
+                        {
+                            eng: 'Chicken',
+                            pl: 'Kurczak',
+                            pronunciation: '/ˈtʃɪkɪn/'
+                        },
+                        {
+                            eng: 'Egg',
+                            pl: 'Jajko',
+                            pronunciation: '/eɡ/'
+                        },
+                        {
+                            eng: 'Fish',
+                            pl: 'Ryba',
+                            pronunciation: '/fɪʃ/'
+                        },
+                        {
+                            eng: 'Meat',
+                            pl: 'Mięso',
+                            pronunciation: '/miːt/'
+                        },
+                        {
+                            eng: 'Milk',
+                            pl: 'Mleko',
+                            pronunciation: '/mɪlk/'
+                        },
+                        {
+                            eng: 'Orange',
+                            pl: 'Pomarańcza',
+                            pronunciation: '/ˈɒrɪndʒ/'
+                        },
+                        {
+                            eng: 'Potato',
+                            pl: 'Ziemniak',
+                            pronunciation: '/pəˈteɪtəʊ/'
+                        },
+                        {
+                            eng: 'Rice',
+                            pl: 'Ryż',
+                            pronunciation: '/raɪs/'
+                        },
+                        {
+                            eng: 'Salad',
+                            pl: 'Sałatka',
+                            pronunciation: '/ˈsæləd/'
+                        },
+                        {
+                            eng: 'Salt',
+                            pl: 'Sól',
+                            pronunciation: '/sɔːlt/'
+                        },
+                        {
+                            eng: 'Sugar',
+                            pl: 'Cukier',
+                            pronunciation: '/ˈʃʊɡə/'
+                        },
+                        {
+                            eng: 'Tomato',
+                            pl: 'Pomidor',
+                            pronunciation: '/təˈmɑːtəʊ/'
+                        },
+                        {
+                            eng: 'Water',
+                            pl: 'Woda',
+                            pronunciation: '/ˈwɔːtə/'
+                        },
+                        {
+                            eng: 'Coffee',
+                            pl: 'Kawa',
+                            pronunciation: '/ˈkɒfi/'
+                        },
+                        {
+                            eng: 'Tea',
+                            pl: 'Herbata',
+                            pronunciation: '/tiː/'
+                        }
+                    ]
+                },
+                {
+                    id: 'beginner-5',
+                    title: 'Lekcja 5 - Rodzina',
+                    words: [
+                        {
+                            eng: 'Mother',
+                            pl: 'Matka',
+                            pronunciation: '/ˈmʌðə/'
+                        },
+                        {
+                            eng: 'Father',
+                            pl: 'Ojciec',
+                            pronunciation: '/ˈfɑːðə/'
+                        },
+                        {
+                            eng: 'Parents',
+                            pl: 'Rodzice',
+                            pronunciation: '/ˈpeərənts/'
+                        },
+                        {
+                            eng: 'Sister',
+                            pl: 'Siostra',
+                            pronunciation: '/ˈsɪstə/'
+                        },
+                        {
+                            eng: 'Brother',
+                            pl: 'Brat',
+                            pronunciation: '/ˈbrʌðə/'
+                        },
+                        {
+                            eng: 'Daughter',
+                            pl: 'Córka',
+                            pronunciation: '/ˈdɔːtə/'
+                        },
+                        {
+                            eng: 'Son',
+                            pl: 'Syn',
+                            pronunciation: '/sʌn/'
+                        },
+                        {
+                            eng: 'Children',
+                            pl: 'Dzieci',
+                            pronunciation: '/ˈtʃɪldrən/'
+                        },
+                        {
+                            eng: 'Grandmother',
+                            pl: 'Babcia',
+                            pronunciation: '/ˈɡrænˌmʌðə/'
+                        },
+                        {
+                            eng: 'Grandfather',
+                            pl: 'Dziadek',
+                            pronunciation: '/ˈɡrændˌfɑːðə/'
+                        },
+                        {
+                            eng: 'Grandparents',
+                            pl: 'Dziadkowie',
+                            pronunciation: '/ˈɡrænˌpeərənts/'
+                        },
+                        {
+                            eng: 'Aunt',
+                            pl: 'Ciotka',
+                            pronunciation: '/ɑːnt/'
+                        },
+                        {
+                            eng: 'Uncle',
+                            pl: 'Wujek',
+                            pronunciation: '/ˈʌŋkl/'
+                        },
+                        {
+                            eng: 'Cousin',
+                            pl: 'Kuzyn/Kuzynka',
+                            pronunciation: '/ˈkʌzn/'
+                        },
+                        {
+                            eng: 'Niece',
+                            pl: 'Siostrzenica/Bratanica',
+                            pronunciation: '/niːs/'
+                        },
+                        {
+                            eng: 'Nephew',
+                            pl: 'Siostrzeniec/Bratanek',
+                            pronunciation: '/ˈnefjuː/'
+                        },
+                        {
+                            eng: 'Wife',
+                            pl: 'Żona',
+                            pronunciation: '/waɪf/'
+                        },
+                        {
+                            eng: 'Husband',
+                            pl: 'Mąż',
+                            pronunciation: '/ˈhʌzbənd/'
+                        },
+                        {
+                            eng: 'Family',
+                            pl: 'Rodzina',
+                            pronunciation: '/ˈfæməli/'
+                        },
+                        {
+                            eng: 'Relatives',
+                            pl: 'Krewni',
+                            pronunciation: '/ˈrelətɪvz/'
+                        }
+                    ]
+                }
+            ],
+            elementary: [
+  {
+    id: 'elementary-1',
+    title: 'Lekcja 1 - Czas wolny',
+    words: [
+      { eng: 'Hobby', pl: 'Hobby', pronunciation: '/ˈhɒbi/' },
+      { eng: 'Cycling', pl: 'Jazda na rowerze', pronunciation: '/ˈsaɪklɪŋ/' },
+      { eng: 'Painting', pl: 'Malowanie', pronunciation: '/ˈpeɪntɪŋ/' },
+      { eng: 'Swimming', pl: 'Pływanie', pronunciation: '/ˈswɪmɪŋ/' },
+      { eng: 'Camping', pl: 'Biwakowanie', pronunciation: '/ˈkæmpɪŋ/' },
+      { eng: 'Yoga', pl: 'Joga', pronunciation: '/ˈjəʊɡə/' },
+      { eng: 'Chess', pl: 'Szachy', pronunciation: '/tʃes/' },
+      { eng: 'Guitar', pl: 'Gitara', pronunciation: '/ɡɪˈtɑː/' },
+      { eng: 'Theater', pl: 'Teatr', pronunciation: '/ˈθɪətə/' },
+      { eng: 'Netflix', pl: 'Netflix', pronunciation: '/ˈnetflɪks/' },
+      { eng: 'Picnic', pl: 'Piknik', pronunciation: '/ˈpɪknɪk/' },
+      { eng: 'Podcast', pl: 'Podcast', pronunciation: '/ˈpɒdkɑːst/' },
+      { eng: 'Meditation', pl: 'Medytacja', pronunciation: '/ˌmedɪˈteɪʃn/' },
+      { eng: 'Fishing', pl: 'Wędkowanie', pronunciation: '/ˈfɪʃɪŋ/' },
+      { eng: 'Hiking', pl: 'Wędrówki', pronunciation: '/ˈhaɪkɪŋ/' },
+      { eng: 'DIY', pl: 'Zrób to sam', pronunciation: '/ˌdiː aɪ ˈwaɪ/' },
+      { eng: 'Knitting', pl: 'Robienie na drutach', pronunciation: '/ˈnɪtɪŋ/' },
+      { eng: 'Astronomy', pl: 'Astronomia', pronunciation: '/əˈstrɒnəmi/' },
+      { eng: 'Volunteering', pl: 'Wolontariat', pronunciation: '/ˌvɒlənˈtɪərɪŋ/' },
+      { eng: 'Board games', pl: 'Gry planszowe', pronunciation: '/bɔːd ɡeɪmz/' }
+    ]
+  },
+  {
+    id: 'elementary-2',
+    title: 'Lekcja 2 - Rodzina',
+    words: [
+      { eng: 'Stepmother', pl: 'Macocha', pronunciation: '/ˈstepmʌðə/' },
+      { eng: 'Nephew', pl: 'Bratanek', pronunciation: '/ˈnefjuː/' },
+      { eng: 'Niece', pl: 'Siostrzenica', pronunciation: '/niːs/' },
+      { eng: 'Twins', pl: 'Bliźnięta', pronunciation: '/twɪnz/' },
+      { eng: 'Godfather', pl: 'Ojciec chrzestny', pronunciation: '/ˈɡɒdfɑːðə/' },
+      { eng: 'Foster child', pl: 'Dziecko zastępcze', pronunciation: '/ˈfɒstə tʃaɪld/' },
+      { eng: 'In-laws', pl: 'Teściowie', pronunciation: '/ɪn lɔːz/' },
+      { eng: 'Single parent', pl: 'Samotny rodzic', pronunciation: '/ˈsɪŋɡl ˈpeərənt/' },
+      { eng: 'Toddler', pl: 'Maluch', pronunciation: '/ˈtɒdlə/' },
+      { eng: 'Ancestors', pl: 'Przodkowie', pronunciation: '/ˈænsestəz/' },
+      { eng: 'Guardian', pl: 'Opiekun', pronunciation: '/ˈɡɑːdiən/' },
+      { eng: 'Sibling rivalry', pl: 'Rywalizacja między rodzeństwem', pronunciation: '/ˈsɪblɪŋ ˈraɪvlri/' },
+      { eng: 'Family tree', pl: 'Drzewo genealogiczne', pronunciation: '/ˈfæməli triː/' },
+      { eng: 'Heirloom', pl: 'Pamiątka rodzinna', pronunciation: '/ˈeəluːm/' },
+      { eng: 'Nuclear family', pl: 'Rodzina nuklearna', pronunciation: '/ˈnjuːkliə ˈfæməli/' },
+      { eng: 'Extended family', pl: 'Rodzina wielopokoleniowa', pronunciation: '/ɪkˈstendɪd ˈfæməli/' },
+      { eng: 'Adoption', pl: 'Adopcja', pronunciation: '/əˈdɒpʃn/' },
+      { eng: 'Custody', pl: 'Opieka prawna', pronunciation: '/ˈkʌstədi/' },
+      { eng: 'Family reunion', pl: 'Zjazd rodzinny', pronunciation: '/ˈfæməli ˌriːˈjuːnjən/' },
+      { eng: 'Genealogy', pl: 'Genealogia', pronunciation: '/ˌdʒiːniˈælədʒi/' }
+    ]
+  },
+  {
+    id: 'elementary-3',
+    title: 'Lekcja 3 - Jedzenie',
+    words: [
+      { eng: 'Avocado', pl: 'Awokado', pronunciation: '/ˌævəˈkɑːdəʊ/' },
+      { eng: 'Pasta', pl: 'Makaron', pronunciation: '/ˈpæstə/' },
+      { eng: 'Vegetarian', pl: 'Wegetarianin', pronunciation: '/ˌvedʒəˈteəriən/' },
+      { eng: 'Gluten-free', pl: 'Bezglutenowe', pronunciation: '/ˈɡluːtn friː/' },
+      { eng: 'Organic', pl: 'Eko', pronunciation: '/ɔːˈɡænɪk/' },
+      { eng: 'Delivery', pl: 'Dowóz', pronunciation: '/dɪˈlɪvəri/' },
+      { eng: 'Recipe', pl: 'Przepis', pronunciation: '/ˈresəpi/' },
+      { eng: 'Dessert', pl: 'Deser', pronunciation: '/dɪˈzɜːt/' },
+      { eng: 'Barbecue', pl: 'Grill', pronunciation: '/ˈbɑːbɪkjuː/' },
+      { eng: 'Bakery', pl: 'Piekarnia', pronunciation: '/ˈbeɪkəri/' },
+      { eng: 'Vegan', pl: 'Wegańskie', pronunciation: '/ˈviːɡən/' },
+      { eng: 'Leftovers', pl: 'Resztki', pronunciation: '/ˈleftəʊvəz/' },
+      { eng: 'Takeaway', pl: 'Na wynos', pronunciation: '/ˈteɪkəweɪ/' },
+      { eng: 'Grocery', pl: 'Artykuły spożywcze', pronunciation: '/ˈɡrəʊsəri/' },
+      { eng: 'Nutritious', pl: 'Pożywne', pronunciation: '/njuˈtrɪʃəs/' },
+      { eng: 'Allergy', pl: 'Alergia', pronunciation: '/ˈælədʒi/' },
+      { eng: 'Beverage', pl: 'Napoje', pronunciation: '/ˈbevərɪdʒ/' },
+      { eng: 'Caffeine', pl: 'Kofeina', pronunciation: '/ˈkæfiːn/' },
+      { eng: 'Diet', pl: 'Dieta', pronunciation: '/ˈdaɪət/' },
+      { eng: 'Snack', pl: 'Przekąska', pronunciation: '/snæk/' }
+    ]
+  },
+  {
+    id: 'elementary-4',
+    title: 'Lekcja 4 - Codzienne czynności',
+    words: [
+      { eng: 'Commute', pl: 'Dojazd do pracy', pronunciation: '/kəˈmjuːt/' },
+      { eng: 'Errands', pl: 'Sprawunki', pronunciation: '/ˈerəndz/' },
+      { eng: 'Laundry', pl: 'Pranie', pronunciation: '/ˈlɔːndri/' },
+      { eng: 'Vacuuming', pl: 'Odkurzanie', pronunciation: '/ˈvækjuːmɪŋ/' },
+      { eng: 'Mopping', pl: 'Mycie podłogi', pronunciation: '/ˈmɒpɪŋ/' },
+      { eng: 'Recycling', pl: 'Recykling', pronunciation: '/ˌriːˈsaɪklɪŋ/' },
+      { eng: 'Nap', pl: 'Drzemka', pronunciation: '/næp/' },
+      { eng: 'Remote work', pl: 'Praca zdalna', pronunciation: '/rɪˈməʊt wɜːk/' },
+      { eng: 'Carpool', pl: 'Wspólne dojazdy', pronunciation: '/ˈkɑːpuːl/' },
+      { eng: 'Deadline', pl: 'Termin', pronunciation: '/ˈdedlaɪn/' },
+      { eng: 'Appointment', pl: 'Wizyta', pronunciation: '/əˈpɔɪntmənt/' },
+      { eng: 'Procrastination', pl: 'Prokrastynacja', pronunciation: '/prəˌkræstɪˈneɪʃn/' },
+      { eng: 'Routine', pl: 'Rutyna', pronunciation: '/ruːˈtiːn/' },
+      { eng: 'Time management', pl: 'Zarządzanie czasem', pronunciation: '/taɪm ˈmænɪdʒmənt/' },
+      { eng: 'Multitasking', pl: 'Wielozadaniowość', pronunciation: '/ˌmʌltiˈtɑːskɪŋ/' },
+      { eng: 'Self-care', pl: 'Dbanie o siebie', pronunciation: '/self keə/' },
+      { eng: 'Chores', pl: 'Obowiązki domowe', pronunciation: '/tʃɔːz/' },
+      { eng: 'Planner', pl: 'Planer', pronunciation: '/ˈplænə/' },
+      { eng: 'Efficiency', pl: 'Wydajność', pronunciation: '/ɪˈfɪʃnsi/' },
+      { eng: 'Work-life balance', pl: 'Równowaga praca-życie', pronunciation: '/wɜːk laɪf ˈbæləns/' }
+    ]
+  },
+  {
+    id: 'elementary-5',
+    title: 'Lekcja 5 - Pogoda',
+    words: [
+      { eng: 'Drizzle', pl: 'Mżawka', pronunciation: '/ˈdrɪzl/' },
+      { eng: 'Humidity', pl: 'Wilgotność', pronunciation: '/hjuːˈmɪdəti/' },
+      { eng: 'Forecast', pl: 'Prognoza', pronunciation: '/ˈfɔːkɑːst/' },
+      { eng: 'Heatwave', pl: 'Fala upałów', pronunciation: '/ˈhiːtweɪv/' },
+      { eng: 'Frost', pl: 'Szron', pronunciation: '/frɒst/' },
+      { eng: 'Hail', pl: 'Grad', pronunciation: '/heɪl/' },
+      { eng: 'Meteorology', pl: 'Meteorologia', pronunciation: '/ˌmiːtiəˈrɒlədʒi/' },
+      { eng: 'Climate', pl: 'Klimat', pronunciation: '/ˈklaɪmət/' },
+      { eng: 'Barometer', pl: 'Barometr', pronunciation: '/bəˈrɒmɪtə/' },
+      { eng: 'Thermometer', pl: 'Termometr', pronunciation: '/θəˈmɒmɪtə/' },
+      { eng: 'Umbrella', pl: 'Parasol', pronunciation: '/ʌmˈbrelə/' },
+      { eng: 'Lightning', pl: 'Błyskawica', pronunciation: '/ˈlaɪtnɪŋ/' },
+      { eng: 'Thunder', pl: 'Grzmot', pronunciation: '/ˈθʌndə/' },
+      { eng: 'Tornado', pl: 'Tornado', pronunciation: '/tɔːˈneɪdəʊ/' },
+      { eng: 'Blizzard', pl: 'Zamieć śnieżna', pronunciation: '/ˈblɪzəd/' },
+      { eng: 'Drought', pl: 'Susza', pronunciation: '/draʊt/' },
+      { eng: 'Monsoon', pl: 'Monsun', pronunciation: '/ˌmɒnˈsuːn/' },
+      { eng: 'UV index', pl: 'Indeks UV', pronunciation: '/juː viː ˈɪndeks/' },
+      { eng: 'Wind chill', pl: 'Temperatura odczuwalna', pronunciation: '/wɪnd tʃɪl/' },
+      { eng: 'Aurora borealis', pl: 'Zorza polarna', pronunciation: '/ɔːˌrɔːrə ˌbɔːriˈælɪs/' }
+    ]
+  }
+],
+            intermediate: [
+			{
+				id: 'intermediate-1',
+				title: 'Lekcja 1 - Biznes',
+				words: [
+					{
+						eng: 'Business',
+						pl: 'Biznes',
+						pronunciation: '/ˈbɪznəs/'
+					},
+					{
+						eng: 'Meeting',
+						pl: 'Spotkanie',
+						pronunciation: '/ˈmiːtɪŋ/'
+					},
+					{
+						eng: 'Management',
+						pl: 'Zarządzanie',
+						pronunciation: '/ˈmænɪdʒmənt/'
+					},
+					{
+						eng: 'Report',
+						pl: 'Raport',
+						pronunciation: '/rɪˈpɔːt/'
+					},
+					{
+						eng: 'Conference',
+						pl: 'Konferencja',
+						pronunciation: '/ˈkɒnfərəns/'
+					},
+					{
+						eng: 'Deadline',
+						pl: 'Termin',
+						pronunciation: '/ˈdedlaɪn/'
+					},
+					{
+						eng: 'Budget',
+						pl: 'Budżet',
+						pronunciation: '/ˈbʌdʒɪt/'
+					},
+					{
+						eng: 'Revenue',
+						pl: 'Przychód',
+						pronunciation: '/ˈrevənjuː/'
+					},
+					{
+						eng: 'Profit',
+						pl: 'Zysk',
+						pronunciation: '/ˈprɒfɪt/'
+					},
+					{
+						eng: 'Loss',
+						pl: 'Strata',
+						pronunciation: '/lɒs/'
+					},
+					{
+						eng: 'Investment',
+						pl: 'Inwestycja',
+						pronunciation: '/ɪnˈvestmənt/'
+					},
+					{
+						eng: 'Entrepreneur',
+						pl: 'Przedsiębiorca',
+						pronunciation: '/ˌɒntrəprəˈnɜː/'
+					},
+					{
+						eng: 'Stakeholder',
+						pl: 'Interesariusz',
+						pronunciation: '/ˈsteɪkˌhəʊldə/'
+					},
+					{
+						eng: 'Negotiation',
+						pl: 'Negocjacja',
+						pronunciation: '/nɪˌɡəʊʃiˈeɪʃn/'
+					},
+					{
+						eng: 'Contract',
+						pl: 'Umowa',
+						pronunciation: '/ˈkɒntrækt/'
+					},
+					{
+						eng: 'Partnership',
+						pl: 'Partnerstwo',
+						pronunciation: '/ˈpɑːtnəʃɪp/'
+					},
+					{
+						eng: 'Competitor',
+						pl: 'Konkurent',
+						pronunciation: '/kəmˈpetɪtə/'
+					},
+					{
+						eng: 'Market share',
+						pl: 'Udział w rynku',
+						pronunciation: '/ˈmɑːkɪt ʃeə/'
+					},
+					{
+						eng: 'Strategy',
+						pl: 'Strategia',
+						pronunciation: '/ˈstrætədʒi/'
+					},
+					{
+						eng: 'Target',
+						pl: 'Cel',
+						pronunciation: '/ˈtɑːɡɪt/'
+					},
+					{
+						eng: 'Performance',
+						pl: 'Wydajność',
+						pronunciation: '/pəˈfɔːməns/'
+					},
+					{
+						eng: 'Growth',
+						pl: 'Wzrost',
+						pronunciation: '/ɡrəʊθ/'
+					},
+					{
+						eng: 'Innovation',
+						pl: 'Innowacja',
+						pronunciation: '/ˌɪnəˈveɪʃn/'
+					},
+					{
+						eng: 'Start-up',
+						pl: 'Start-up',
+						pronunciation: '/stɑːt ʌp/'
+					},
+					{
+						eng: 'Bankruptcy',
+						pl: 'Bankructwo',
+						pronunciation: '/ˈbæŋkrʌptsi/'
+					}
+				]
+			},
+			{
+				id: 'intermediate-2',
+				title: 'Lekcja 2 - Podróże',
+				words: [
+					{
+						eng: 'Travel',
+						pl: 'Podróż',
+						pronunciation: '/ˈtrævl/'
+					},
+					{
+						eng: 'Accommodation',
+						pl: 'Zakwaterowanie',
+						pronunciation: '/əˌkɒməˈdeɪʃn/'
+					},
+					{
+						eng: 'Destination',
+						pl: 'Cel podróży',
+						pronunciation: '/ˌdestɪˈneɪʃn/'
+					},
+					{
+						eng: 'Itinerary',
+						pl: 'Plan podróży',
+						pronunciation: '/aɪˈtɪnərəri/'
+					},
+					{
+						eng: 'Passport',
+						pl: 'Paszport',
+						pronunciation: '/ˈpɑːspɔːt/'
+					},
+					{
+						eng: 'Sightseeing',
+						pl: 'Zwiedzanie',
+						pronunciation: '/ˈsaɪtsiːɪŋ/'
+					},
+					{
+						eng: 'Tourist',
+						pl: 'Turysta',
+						pronunciation: '/ˈtʊərɪst/'
+					},
+					{
+						eng: 'Reservation',
+						pl: 'Rezerwacja',
+						pronunciation: '/ˌrezəˈveɪʃn/'
+					},
+					{
+						eng: 'Boarding pass',
+						pl: 'Karta pokładowa',
+						pronunciation: '/ˈbɔːdɪŋ pɑːs/'
+					},
+					{
+						eng: 'Luggage',
+						pl: 'Bagaż',
+						pronunciation: '/ˈlʌɡɪdʒ/'
+					},
+					{
+						eng: 'Exchange rate',
+						pl: 'Kurs wymiany',
+						pronunciation: '/ɪksˈtʃeɪndʒ reɪt/'
+					},
+					{
+						eng: 'Customs',
+						pl: 'Urząd celny',
+						pronunciation: '/ˈkʌstəmz/'
+					},
+					{
+						eng: 'Visa',
+						pl: 'Wiza',
+						pronunciation: '/ˈviːzə/'
+					},
+					{
+						eng: 'Foreign currency',
+						pl: 'Waluta obca',
+						pronunciation: '/ˈfɒrɪn ˈkʌrənsi/'
+					},
+					{
+						eng: 'Tourist attraction',
+						pl: 'Atrakcja turystyczna',
+						pronunciation: '/ˈtʊərɪst əˈtrækʃn/'
+					},
+					{
+						eng: 'Souvenir',
+						pl: 'Pamiątka',
+						pronunciation: '/ˌsuːvəˈnɪə/'
+					},
+					{
+						eng: 'Excursion',
+						pl: 'Wycieczka',
+						pronunciation: '/ɪkˈskɜːʃn/'
+					},
+					{
+						eng: 'Delayed flight',
+						pl: 'Opóźniony lot',
+						pronunciation: '/dɪˈleɪd flaɪt/'
+					},
+					{
+						eng: 'Travel insurance',
+						pl: 'Ubezpieczenie podróżne',
+						pronunciation: '/ˈtrævl ɪnˈʃʊərəns/'
+					},
+					{
+						eng: 'Check-in',
+						pl: 'Odprawa',
+						pronunciation: '/tʃek ɪn/'
+					},
+					{
+						eng: 'Connection flight',
+						pl: 'Lot przesiadkowy',
+						pronunciation: '/kəˈnekʃn flaɪt/'
+					},
+					{
+						eng: 'Jet lag',
+						pl: 'Zmęczenie po długim locie',
+						pronunciation: '/dʒet læɡ/'
+					},
+					{
+						eng: 'Local cuisine',
+						pl: 'Lokalna kuchnia',
+						pronunciation: '/ˈləʊkəl kwɪˈziːn/'
+					},
+					{
+						eng: 'All-inclusive',
+						pl: 'Wszystko w cenie',
+						pronunciation: '/ɔːl ɪnˈkluːsɪv/'
+					},
+					{
+						eng: 'Culture shock',
+						pl: 'Szok kulturowy',
+						pronunciation: '/ˈkʌltʃə ʃɒk/'
+					}
+				]
+			},{
+    id: 'intermediate-3',
+    title: 'Lekcja 3 - Zdrowie',
+    words: [
+        { eng: 'Doctor', pl: 'Lekarz', pronunciation: '/ˈdɒktər/' },
+        { eng: 'Hospital', pl: 'Szpital', pronunciation: '/ˈhɒspɪtl/' },
+        { eng: 'Medicine', pl: 'Lekarstwo', pronunciation: '/ˈmɛdɪsɪn/' },
+        { eng: 'Surgery', pl: 'Operacja', pronunciation: '/ˈsɜːrdʒəri/' },
+        { eng: 'Therapy', pl: 'Terapia', pronunciation: '/ˈθɛrəpi/' },
+        { eng: 'Treatment', pl: 'Leczenie', pronunciation: '/ˈtriːtmənt/' },
+        { eng: 'Diagnosis', pl: 'Diagnoza', pronunciation: '/ˌdaɪəɡˈnəʊsɪs/' },
+        { eng: 'Symptom', pl: 'Objaw', pronunciation: '/ˈsɪmptəm/' },
+        { eng: 'Vaccine', pl: 'Szczepionka', pronunciation: '/ˈvæksiːn/' },
+        { eng: 'Pharmacy', pl: 'Apteka', pronunciation: '/ˈfɑːrməsi/' },
+        { eng: 'Ambulance', pl: 'Karetka', pronunciation: '/ˈæmbjʊləns/' },
+        { eng: 'Emergency', pl: 'Nagły wypadek', pronunciation: '/ɪˈmɜːrdʒənsi/' },
+        { eng: 'Painkiller', pl: 'Środek przeciwbólowy', pronunciation: '/ˈpeɪnˌkɪlər/' },
+        { eng: 'Allergy', pl: 'Alergia', pronunciation: '/ˈælədʒi/' },
+        { eng: 'X-ray', pl: 'Rentgen', pronunciation: '/ˈɛksˌreɪ/' },
+        { eng: 'Check-up', pl: 'Badanie kontrolne', pronunciation: '/ˈtʃɛkʌp/' },
+        { eng: 'Infection', pl: 'Infekcja', pronunciation: '/ɪnˈfɛkʃən/' },
+        { eng: 'Dentist', pl: 'Dentysta', pronunciation: '/ˈdɛntɪst/' },
+        { eng: 'Blood pressure', pl: 'Ciśnienie krwi', pronunciation: '/blʌd ˈprɛʃər/' },
+        { eng: 'Fever', pl: 'Gorączka', pronunciation: '/ˈfiːvər/' },
+        { eng: 'Cold', pl: 'Przeziębienie', pronunciation: '/kəʊld/' },
+        { eng: 'Flu', pl: 'Grypa', pronunciation: '/fluː/' },
+        { eng: 'Cough', pl: 'Kaszel', pronunciation: '/kɒf/' },
+        { eng: 'Fracture', pl: 'Złamanie', pronunciation: '/ˈfræktʃər/' },
+        { eng: 'Sprain', pl: 'Skręcenie', pronunciation: '/spreɪn/' }
+    ]
+},
+    {
+        id: 'intermediate-4',
+        title: 'Lekcja 4 - Sport',
+        words: [
+            { eng: 'Athlete', pl: 'Sportowiec', pronunciation: '/ˈæθliːt/' },
+            { eng: 'Coach', pl: 'Trener', pronunciation: '/kəʊtʃ/' },
+            { eng: 'Competition', pl: 'Zawody', pronunciation: '/ˌkɒmpɪˈtɪʃən/' },
+            { eng: 'Exercise', pl: 'Ćwiczenie', pronunciation: '/ˈɛksəsaɪz/' },
+            { eng: 'Gym', pl: 'Siłownia', pronunciation: '/dʒɪm/' },
+            { eng: 'Team', pl: 'Drużyna', pronunciation: '/tiːm/' },
+            { eng: 'Referee', pl: 'Sędzia', pronunciation: '/ˌrɛfəˈriː/' },
+            { eng: 'Tournament', pl: 'Turniej', pronunciation: '/ˈtʊrnəmənt/' },
+            { eng: 'Training', pl: 'Trening', pronunciation: '/ˈtreɪnɪŋ/' },
+            { eng: 'Victory', pl: 'Zwycięstwo', pronunciation: '/ˈvɪktəri/' }
+        ]
+    },
+	{
+    id: 'intermediate-5',
+    title: 'Lekcja 5 - Zabawa',
+    words: [
+        { eng: 'Game', pl: 'Gra', pronunciation: '/ɡeɪm/' },
+        { eng: 'Toy', pl: 'Zabawka', pronunciation: '/tɔɪ/' },
+        { eng: 'Puzzle', pl: 'Łamigłówka', pronunciation: '/ˈpʌz.l̩/' },
+        { eng: 'Board game', pl: 'Gra planszowa', pronunciation: '/bɔːrd ɡeɪm/' },
+        { eng: 'Card game', pl: 'Gra karciana', pronunciation: '/kɑːrd ɡeɪm/' },
+        { eng: 'Video game', pl: 'Gra wideo', pronunciation: '/ˈvɪd.i.oʊ ɡeɪm/' },
+        { eng: 'Dice', pl: 'Kostka do gry', pronunciation: '/daɪs/' },
+        { eng: 'Playground', pl: 'Plac zabaw', pronunciation: '/ˈpleɪ.ɡraʊnd/' },
+        { eng: 'Swing', pl: 'Huśtawka', pronunciation: '/swɪŋ/' },
+        { eng: 'Slide', pl: 'Zjeżdżalnia', pronunciation: '/slaɪd/' },
+        { eng: 'Balloon', pl: 'Balon', pronunciation: '/bəˈluːn/' },
+        { eng: 'Magic trick', pl: 'Sztuczka magiczna', pronunciation: '/ˈmædʒ.ɪk trɪk/' },
+        { eng: 'Circus', pl: 'Cyrk', pronunciation: '/ˈsɜːr.kəs/' },
+        { eng: 'Clown', pl: 'Klaun', pronunciation: '/klaʊn/' },
+        { eng: 'Hide and seek', pl: 'Chowany', pronunciation: '/haɪd ənd siːk/' },
+        { eng: 'Tag', pl: 'Berek', pronunciation: '/tæɡ/' },
+        { eng: 'Jump rope', pl: 'Skakanka', pronunciation: '/dʒʌmp roʊp/' },
+        { eng: 'Kite', pl: 'Latawiec', pronunciation: '/kaɪt/' },
+        { eng: 'Doll', pl: 'Lalka', pronunciation: '/dɒl/' },
+        { eng: 'Marbles', pl: 'Kulki', pronunciation: '/ˈmɑːr.bəlz/' },
+        { eng: 'Yo-yo', pl: 'Jojo', pronunciation: '/ˈjoʊ.joʊ/' },
+        { eng: 'Hopscotch', pl: 'Klasy', pronunciation: '/ˈhɒp.skɒtʃ/' },
+        { eng: 'Treasure hunt', pl: 'Poszukiwanie skarbów', pronunciation: '/ˈtrɛʒ.ər hʌnt/' },
+        { eng: 'Bubble', pl: 'Bańka mydlana', pronunciation: '/ˈbʌb.l̩/' },
+        { eng: 'Costume', pl: 'Kostium', pronunciation: '/ˈkɒs.tjuːm/' }
+    ]
+}
+
+],
+advanced: [
+        {
+                id: 'advanced-1',
+				title: 'Lekcja 1 - Technologia',
+				words: [
+            {
+                eng: 'Artificial Intelligence',
+                pl: 'Sztuczna inteligencja',
+                pronunciation: '/ˌɑːtɪˈfɪʃl ɪnˈtelɪdʒəns/'
+            },
+            {
+                eng: 'Quantum computing',
+                pl: 'Obliczenia kwantowe',
+                pronunciation: '/ˈkwɒntəm kəmˈpjuːtɪŋ/'
+            },
+            {
+                eng: 'Blockchain',
+                pl: 'Blockchain',
+                pronunciation: '/ˈblɒktʃeɪn/'
+            },
+            {
+                eng: 'Machine Learning',
+                pl: 'Uczenie maszynowe',
+                pronunciation: '/məˈʃiːn ˈlɜːnɪŋ/'
+            },
+            {
+                eng: 'Cybersecurity',
+                pl: 'Cyberbezpieczeństwo',
+                pronunciation: '/ˈsaɪbəsɪˌkjʊərəti/'
+            },
+            {
+                eng: 'Virtual Reality',
+                pl: 'Wirtualna rzeczywistość',
+                pronunciation: '/ˈvɜːtʃuəl riˈælɪti/'
+            },
+            {
+                eng: 'Augmented Reality',
+                pl: 'Rozszerzona rzeczywistość',
+                pronunciation: '/ɔːɡˈmentɪd riˈælɪti/'
+            },
+            {
+                eng: 'Internet of Things',
+                pl: 'Internet rzeczy',
+                pronunciation: '/ˈɪntənet əv θɪŋz/'
+            },
+            {
+                eng: 'Cloud Computing',
+                pl: 'Chmura obliczeniowa',
+                pronunciation: '/klaʊd kəmˈpjuːtɪŋ/'
+            },
+            {
+                eng: 'Data Mining',
+                pl: 'Eksploracja danych',
+                pronunciation: '/ˈdeɪtə ˈmaɪnɪŋ/'
+            },
+            {
+                eng: 'Algorithm',
+                pl: 'Algorytm',
+                pronunciation: '/ˈælɡərɪðəm/'
+            },
+            {
+                eng: 'Cryptocurrency',
+                pl: 'Kryptowaluta',
+                pronunciation: '/ˈkrɪptəʊˌkʌrənsi/'
+            },
+            {
+                eng: 'Neural Network',
+                pl: 'Sieć neuronowa',
+                pronunciation: '/ˈnjʊərəl ˈnetwɜːk/'
+            },
+            {
+                eng: 'Big Data',
+                pl: 'Duże zbiory danych',
+                pronunciation: '/bɪɡ ˈdeɪtə/'
+            },
+            {
+                eng: 'Encryption',
+                pl: 'Szyfrowanie',
+                pronunciation: '/ɪnˈkrɪpʃn/'
+            },
+            {
+                eng: 'Biometrics',
+                pl: 'Biometria',
+                pronunciation: '/ˌbaɪəʊˈmetrɪks/'
+            },
+            {
+                eng: 'Nanotechnology',
+                pl: 'Nanotechnologia',
+                pronunciation: '/ˌnænəʊtekˈnɒlədʒi/'
+            },
+            {
+                eng: 'Autonomous Systems',
+                pl: 'Systemy autonomiczne',
+                pronunciation: '/ɔːˈtɒnəməs ˈsɪstəmz/'
+            },
+            {
+                eng: 'Robotics',
+                pl: 'Robotyka',
+                pronunciation: '/rəʊˈbɒtɪks/'
+            },
+            {
+                eng: 'Predictive Analytics',
+                pl: 'Analityka predykcyjna',
+                pronunciation: '/prɪˈdɪktɪv ænəˈlɪtɪks/'
+            },
+            {
+                eng: 'Deep Learning',
+                pl: 'Głębokie uczenie',
+                pronunciation: '/diːp ˈlɜːnɪŋ/'
+            },
+            {
+                eng: 'Distributed Ledger',
+                pl: 'Rozproszona księga główna',
+                pronunciation: '/dɪˈstrɪbjuːtɪd ˈledʒə/'
+            },
+            {
+                eng: 'Edge Computing',
+                pl: 'Przetwarzanie brzegowe',
+                pronunciation: '/edʒ kəmˈpjuːtɪŋ/'
+            },
+            {
+                eng: 'Immersive Technology',
+                pl: 'Technologia immersyjna',
+                pronunciation: '/ɪˈmɜːsɪv tekˈnɒlədʒi/'
+            },
+            {
+                eng: 'API (Application Programming Interface)',
+                pl: 'Interfejs programowania aplikacji',
+                pronunciation: '/ˌeɪ piː ˈaɪ/'
+            },
+            {
+                eng: 'Quantum Cryptography',
+                pl: 'Kryptografia kwantowa',
+                pronunciation: '/ˈkwɒntəm krɪpˈtɒɡrəfi/'
+            },
+            {
+                eng: 'Serverless Computing',
+                pl: 'Przetwarzanie bezserwerowe',
+                pronunciation: '/ˈsɜːvələs kəmˈpjuːtɪŋ/'
+            },
+            {
+                eng: 'Digital Twin',
+                pl: 'Cyfrowy bliźniak',
+                pronunciation: '/ˈdɪdʒɪtl twɪn/'
+            },
+            {
+                eng: 'Extended Reality (XR)',
+                pl: 'Rzeczywistość rozszerzona (XR)',
+                pronunciation: '/ɪkˈstendɪd riˈælɪti/'
+            },
+            {
+                eng: 'Biotechnology',
+                pl: 'Biotechnologia',
+                pronunciation: '/ˌbaɪəʊtekˈnɒlədʒi/'
+            }
+        ]
+    },
+	{
+        id: 'advanced-2',
+        title: 'Lekcja 2 - Ekonomia i finanse',
+        words: [
+            {
+                eng: 'Fiscal policy',
+                pl: 'Polityka fiskalna',
+                pronunciation: '/ˈfɪskəl ˈpɒləsi/'
+            },
+            {
+                eng: 'Monetary policy',
+                pl: 'Polityka monetarna',
+                pronunciation: '/ˈmʌnɪtəri ˈpɒləsi/'
+            },
+            {
+                eng: 'Macroeconomics',
+                pl: 'Makroekonomia',
+                pronunciation: '/ˌmækrəʊiːkəˈnɒmɪks/'
+            },
+            {
+                eng: 'Microeconomics',
+                pl: 'Mikroekonomia',
+                pronunciation: '/ˌmaɪkrəʊiːkəˈnɒmɪks/'
+            },
+            {
+                eng: 'Economic growth',
+                pl: 'Wzrost gospodarczy',
+                pronunciation: '/ˌiːkəˈnɒmɪk ɡrəʊθ/'
+            },
+            {
+                eng: 'Diversification',
+                pl: 'Dywersyfikacja',
+                pronunciation: '/daɪˌvɜːsɪfɪˈkeɪʃn/'
+            },
+            {
+                eng: 'Inflation',
+                pl: 'Inflacja',
+                pronunciation: '/ɪnˈfleɪʃn/'
+            },
+            {
+                eng: 'Deflation',
+                pl: 'Deflacja',
+                pronunciation: '/dɪˈfleɪʃn/'
+            },
+            {
+                eng: 'Stagflation',
+                pl: 'Stagflacja',
+                pronunciation: '/ˌstæɡˈfleɪʃn/'
+            },
+            {
+                eng: 'Interest rate',
+                pl: 'Stopa procentowa',
+                pronunciation: '/ˈɪntrəst reɪt/'
+            },
+            {
+                eng: 'Liquidity',
+                pl: 'Płynność',
+                pronunciation: '/lɪˈkwɪdəti/'
+            },
+            {
+                eng: 'Solvency',
+                pl: 'Wypłacalność',
+                pronunciation: '/ˈsɒlvənsi/'
+            },
+            {
+                eng: 'Asset allocation',
+                pl: 'Alokacja aktywów',
+                pronunciation: '/ˈæset ˌæləˈkeɪʃn/'
+            },
+            {
+                eng: 'Derivatives',
+                pl: 'Instrumenty pochodne',
+                pronunciation: '/dɪˈrɪvətɪvz/'
+            },
+            {
+                eng: 'Futures contract',
+                pl: 'Kontrakt terminowy',
+                pronunciation: '/ˈfjuːtʃəz ˈkɒntrækt/'
+            },
+            {
+                eng: 'Hedge fund',
+                pl: 'Fundusz hedgingowy',
+                pronunciation: '/hedʒ fʌnd/'
+            },
+            {
+                eng: 'Venture capital',
+                pl: 'Kapitał wysokiego ryzyka',
+                pronunciation: '/ˈventʃə ˈkæpɪtl/'
+            },
+            {
+                eng: 'Yield curve',
+                pl: 'Krzywa rentowności',
+                pronunciation: '/jiːld kɜːv/'
+            },
+            {
+                eng: 'Securities',
+                pl: 'Papiery wartościowe',
+                pronunciation: '/sɪˈkjʊərətiz/'
+            },
+            {
+                eng: 'Equity',
+                pl: 'Kapitał własny',
+                pronunciation: '/ˈekwəti/'
+            },
+            {
+                eng: 'Debt-to-equity ratio',
+                pl: 'Wskaźnik zadłużenia do kapitału własnego',
+                pronunciation: '/det tu ˈekwəti ˈreɪʃiəʊ/'
+            },
+            {
+                eng: 'Arbitrage',
+                pl: 'Arbitraż',
+                pronunciation: '/ˈɑːbɪtrɑːʒ/'
+            },
+            {
+                eng: 'Quantitative easing',
+                pl: 'Luzowanie ilościowe',
+                pronunciation: '/ˈkwɒntɪtətɪv ˈiːzɪŋ/'
+            },
+            {
+                eng: 'Bull market',
+                pl: 'Hossa',
+                pronunciation: '/bʊl ˈmɑːkɪt/'
+            },
+            {
+                eng: 'Bear market',
+                pl: 'Bessa',
+                pronunciation: '/beə ˈmɑːkɪt/'
+            },
+            {
+                eng: 'GDP (Gross Domestic Product)',
+                pl: 'PKB (Produkt Krajowy Brutto)',
+                pronunciation: '/ˌdʒiː diː ˈpiː/'
+            },
+            {
+                eng: 'Austerity measures',
+                pl: 'Środki oszczędnościowe',
+                pronunciation: '/ɒˈsterəti ˈmeʒəz/'
+            },
+            {
+                eng: 'Foreign direct investment',
+                pl: 'Bezpośrednie inwestycje zagraniczne',
+                pronunciation: '/ˈfɒrɪn dəˈrekt ɪnˈvestmənt/'
+            },
+            {
+                eng: 'Trade deficit',
+                pl: 'Deficyt handlowy',
+                pronunciation: '/treɪd ˈdefɪsɪt/'
+            },
+            {
+                eng: 'Exchange rate mechanism',
+                pl: 'Mechanizm kursów walutowych',
+                pronunciation: '/ɪksˈtʃeɪndʒ reɪt ˈmekənɪzm/'
+            }
+        ]
+    },
+	{
+        id: 'advanced-3',
+        title: 'Lekcja 3 - Środowisko i ekologia',
+        words: [
+            {
+                eng: 'Sustainability',
+                pl: 'Zrównoważony rozwój',
+                pronunciation: '/səˌsteɪnəˈbɪləti/'
+            },
+            {
+                eng: 'Climate change',
+                pl: 'Zmiana klimatu',
+                pronunciation: '/ˈklaɪmət tʃeɪndʒ/'
+            },
+            {
+                eng: 'Biodiversity',
+                pl: 'Bioróżnorodność',
+                pronunciation: '/ˌbaɪəʊdaɪˈvɜːsəti/'
+            },
+            {
+                eng: 'Renewable energy',
+                pl: 'Energia odnawialna',
+                pronunciation: '/rɪˈnjuːəbl ˈenədʒi/'
+            },
+            {
+                eng: 'Conservation',
+                pl: 'Ochrona środowiska',
+                pronunciation: '/ˌkɒnsəˈveɪʃn/'
+            },
+            {
+                eng: 'Carbon footprint',
+                pl: 'Ślad węglowy',
+                pronunciation: '/ˈkɑːbən ˈfʊtprɪnt/'
+            },
+            {
+                eng: 'Greenhouse effect',
+                pl: 'Efekt cieplarniany',
+                pronunciation: '/ˈɡriːnhaʊs ɪˈfekt/'
+            },
+            {
+                eng: 'Fossil fuels',
+                pl: 'Paliwa kopalne',
+                pronunciation: '/ˈfɒsl ˈfjuːəlz/'
+            },
+            {
+                eng: 'Ecosystem',
+                pl: 'Ekosystem',
+                pronunciation: '/ˈiːkəʊˌsɪstəm/'
+            },
+            {
+                eng: 'Deforestation',
+                pl: 'Wylesianie',
+                pronunciation: '/diːˌfɒrɪˈsteɪʃn/'
+            },
+            {
+                eng: 'Desertification',
+                pl: 'Pustynnienie',
+                pronunciation: '/dɪˌzɜːtɪfɪˈkeɪʃn/'
+            },
+			{
+                eng: 'Biosphere',
+                pl: 'Biosfera',
+                pronunciation: '/ˈbaɪəʊsfɪə/'
+            },
+        ]
+	},{
+    id: 'advanced-4',
+    title: 'Lekcja 4 - Psychologia',
+    words: [
+        { eng: 'Cognition', pl: 'Poznanie', pronunciation: '/kɒɡˈnɪʃən/' },
+        { eng: 'Empathy', pl: 'Empatia', pronunciation: '/ˈɛmpəθi/' },
+        { eng: 'Consciousness', pl: 'Świadomość', pronunciation: '/ˈkɒnʃəsnəs/' },
+        { eng: 'Neurosis', pl: 'Neuroza', pronunciation: '/ˌnjʊəˈrəʊsɪs/' },
+        { eng: 'Perception', pl: 'Percepcja', pronunciation: '/pərˈsɛpʃən/' },
+        { eng: 'Anxiety', pl: 'Lęk', pronunciation: '/æŋˈzaɪəti/' },
+        { eng: 'Subconscious', pl: 'Podświadomość', pronunciation: '/ˌsʌbˈkɒnʃəs/' },
+        { eng: 'Psychoanalysis', pl: 'Psychoanaliza', pronunciation: '/ˌsaɪkəʊəˈnæləsɪs/' },
+        { eng: 'Cognitive', pl: 'Kognitywny', pronunciation: '/ˈkɒɡnɪtɪv/' },
+        { eng: 'Behaviorism', pl: 'Behawioryzm', pronunciation: '/bɪˈheɪvjərɪzəm/' },
+        { eng: 'Intuition', pl: 'Intuicja', pronunciation: '/ˌɪntjuˈɪʃən/' },
+        { eng: 'Hallucination', pl: 'Halucynacja', pronunciation: '/həˌluːsɪˈneɪʃən/' },
+        { eng: 'Depression', pl: 'Depresja', pronunciation: '/dɪˈprɛʃən/' },
+        { eng: 'Schizophrenia', pl: 'Schizofrenia', pronunciation: '/ˌskɪtsəˈfriːniə/' },
+        { eng: 'Obsessive', pl: 'Obsesyjny', pronunciation: '/əbˈsɛsɪv/' },
+        { eng: 'Phobia', pl: 'Fobia', pronunciation: '/ˈfoʊbiə/' },
+        { eng: 'Motivation', pl: 'Motywacja', pronunciation: '/ˌmoʊtɪˈveɪʃən/' },
+        { eng: 'Personality', pl: 'Osobowość', pronunciation: '/ˌpɜːrsəˈnælɪti/' },
+        { eng: 'Trauma', pl: 'Trauma', pronunciation: '/ˈtrɔːmə/' },
+        { eng: 'Autonomy', pl: 'Autonomia', pronunciation: '/ɔːˈtɒnəmi/' },
+        { eng: 'Ego', pl: 'Ego', pronunciation: '/ˈiːɡoʊ/' },
+        { eng: 'Self-esteem', pl: 'Samoocena', pronunciation: '/sɛlf ɪˈstiːm/' },
+        { eng: 'Delusion', pl: 'Urojenie', pronunciation: '/dɪˈluːʒən/' },
+        { eng: 'Attachment', pl: 'Przywiązanie', pronunciation: '/əˈtætʃmənt/' },
+        { eng: 'Aggression', pl: 'Agresja', pronunciation: '/əˈɡrɛʃən/' },
+        { eng: 'Hypnosis', pl: 'Hipnoza', pronunciation: '/hɪpˈnoʊsɪs/' },
+        { eng: 'Resilience', pl: 'Odporność psychiczna', pronunciation: '/rɪˈzɪlɪəns/' },
+        { eng: 'Sublimation', pl: 'Sublimacja', pronunciation: '/ˌsʌblɪˈmeɪʃən/' },
+        { eng: 'Neurotransmitter', pl: 'Neuroprzekaźnik', pronunciation: '/ˌnjʊrəʊˈtrænsmɪtər/' }
+    ]
+}, {
+    id: 'advanced-5',
+    title: 'Lekcja 5 - Astronomia i Kosmos',
+    words: [
+        { eng: 'Galaxy', pl: 'Galaktyka', pronunciation: '/ˈɡæ.lək.si/' },
+        { eng: 'Nebula', pl: 'Mgławica', pronunciation: '/ˈnɛb.jʊ.lə/' },
+        { eng: 'Black hole', pl: 'Czarna dziura', pronunciation: '/blæk hoʊl/' },
+        { eng: 'Supernova', pl: 'Supernowa', pronunciation: '/ˌsuː.pərˈnoʊ.və/' },
+        { eng: 'Gravity', pl: 'Grawitacja', pronunciation: '/ˈɡræ.və.ti/' },
+        { eng: 'Orbit', pl: 'Orbita', pronunciation: '/ˈɔːr.bɪt/' },
+        { eng: 'Telescope', pl: 'Teleskop', pronunciation: '/ˈtɛl.ɪ.skoʊp/' },
+        { eng: 'Astrophysics', pl: 'Astrofizyka', pronunciation: '/ˌæs.troʊˈfɪ.zɪks/' },
+        { eng: 'Exoplanet', pl: 'Egzoplaneta', pronunciation: '/ˈɛk.soʊˌplæn.ɪt/' },
+        { eng: 'Cosmology', pl: 'Kosmologia', pronunciation: '/kɒzˈmɒl.ə.dʒi/' },
+        { eng: 'Light-year', pl: 'Rok świetlny', pronunciation: '/ˈlaɪt jɪr/' },
+        { eng: 'Dark matter', pl: 'Ciemna materia', pronunciation: '/dɑːrk ˈmæt.ər/' },
+        { eng: 'Big Bang', pl: 'Wielki Wybuch', pronunciation: '/bɪɡ bæŋ/' },
+        { eng: 'Event horizon', pl: 'Horyzont zdarzeń', pronunciation: '/ɪˈvɛnt həˈraɪ.zən/' },
+        { eng: 'Solar system', pl: 'Układ słoneczny', pronunciation: '/ˈsoʊ.lɚ ˈsɪs.təm/' },
+        { eng: 'Asteroid', pl: 'Asteroida', pronunciation: '/ˈæs.tə.rɔɪd/' },
+        { eng: 'Comet', pl: 'Kometa', pronunciation: '/ˈkɒm.ɪt/' },
+        { eng: 'Meteor', pl: 'Meteor', pronunciation: '/ˈmiː.ti.ɔːr/' },
+        { eng: 'Space-time', pl: 'Czasoprzestrzeń', pronunciation: '/speɪs taɪm/' },
+        { eng: 'Wormhole', pl: 'Tunel czasoprzestrzenny', pronunciation: '/ˈwɜːrm.hoʊl/' },
+        { eng: 'Red giant', pl: 'Czerwony olbrzym', pronunciation: '/rɛd ˈdʒaɪ.ənt/' },
+        { eng: 'White dwarf', pl: 'Biały karzeł', pronunciation: '/waɪt dwɔːrf/' },
+        { eng: 'Neutron star', pl: 'Gwiazda neutronowa', pronunciation: '/ˈnuː.trɒn stɑːr/' },
+        { eng: 'Space probe', pl: 'Sonda kosmiczna', pronunciation: '/speɪs proʊb/' },
+        { eng: 'Artificial satellite', pl: 'Sztuczny satelita', pronunciation: '/ˌɑːr.tɪˈfɪʃ.əl ˈsæt.ə.laɪt/' },
+        { eng: 'Rocket propulsion', pl: 'Napęd rakietowy', pronunciation: '/ˈrɒk.ɪt prəˈpʌl.ʃən/' },
+        { eng: 'Interstellar', pl: 'Międzygwiezdny', pronunciation: '/ˌɪn.tərˈstɛl.ər/' },
+        { eng: 'Extraterrestrial', pl: 'Pozaziemski', pronunciation: '/ˌɛk.strə.təˈrɛs.tri.əl/' },
+        { eng: 'Zero gravity', pl: 'Stan nieważkości', pronunciation: '/ˈzɪə.roʊ ˈɡræ.vɪ.ti/' }
+    ]
+}
+
+		
+]
+        };
+        
+        // Główny skrypt
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementy DOM
+            const levelButtons = document.querySelectorAll('.level-btn');
+            const lessonButtonsContainer = document.getElementById('lesson-buttons');
+            const flashcardsGrid = document.getElementById('flashcards-grid');
+            const currentLessonTitle = document.getElementById('current-lesson-title');
+            const progressInfo = document.getElementById('progress-info');
+            const progressBar = document.getElementById('progress-bar');
+            const resetProgressBtn = document.getElementById('reset-progress');
+            const markAllLearnedBtn = document.getElementById('mark-all-learned');
+            const shuffleCardsBtn = document.getElementById('shuffle-cards');
+            const loader = document.getElementById('loader');
+            const infoModal = document.getElementById('info-modal');
+            const closeModal = document.getElementById('close-modal');
+            const toast = document.getElementById('toast');
+            
+            // Stan aplikacji
+            let currentLevel = 'beginner';
+            let currentLesson = null;
+            let learnedWords = JSON.parse(localStorage.getItem('learnedWords')) || {};
+            
+            // Inicjalizacja
+            updateLessonButtons();
+            
+            // Pokazanie modalu informacyjnego przy pierwszym uruchomieniu
+            if (!localStorage.getItem('firstVisit')) {
+                infoModal.style.display = 'flex';
+                localStorage.setItem('firstVisit', 'true');
+            }
+            
+            // Obsługa zamknięcia modalu
+            closeModal.addEventListener('click', function() {
+                infoModal.style.display = 'none';
+            });
+            
+            // Obsługa kliknięcia poza modalem
+            window.addEventListener('click', function(event) {
+                if (event.target === infoModal) {
+                    infoModal.style.display = 'none';
+                }
+            });
+            
+            // Obsługa przycisków poziomu
+            levelButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    levelButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    currentLevel = this.dataset.level;
+                    updateLessonButtons();
+                    resetFlashcards();
+                });
+            });
+            
+            // Obsługa przycisku resetowania postępu
+            resetProgressBtn.addEventListener('click', function() {
+                if (currentLesson) {
+                    const lessonId = currentLesson.id;
+                    delete learnedWords[lessonId];
+                    localStorage.setItem('learnedWords', JSON.stringify(learnedWords));
+                    loadFlashcards(currentLesson);
+                    showToast('Postęp zresetowany');
+                }
+            });
+            
+            // Obsługa przycisku oznaczenia wszystkich jako nauczone
+            markAllLearnedBtn.addEventListener('click', function() {
+                if (currentLesson) {
+                    const lessonId = currentLesson.id;
+                    if (!learnedWords[lessonId]) {
+                        learnedWords[lessonId] = [];
+                    }
+                    
+                    const wordIndices = [];
+                    for (let i = 0; i < currentLesson.words.length; i++) {
+                        if (!learnedWords[lessonId].includes(i)) {
+                            wordIndices.push(i);
+                        }
+                    }
+                    
+                    learnedWords[lessonId] = [...Array(currentLesson.words.length).keys()];
+                    localStorage.setItem('learnedWords', JSON.stringify(learnedWords));
+                    loadFlashcards(currentLesson);
+                    showToast('Wszystkie słowa oznaczone jako nauczone');
+                }
+            });
+            
+            // Obsługa przycisku mieszania kart
+            shuffleCardsBtn.addEventListener('click', function() {
+                if (currentLesson) {
+                    const cards = Array.from(flashcardsGrid.children);
+                    const shuffledCards = shuffleArray(cards);
+                    flashcardsGrid.innerHTML = '';
+                    shuffledCards.forEach(card => {
+                        flashcardsGrid.appendChild(card);
+                    });
+                    showToast('Karty wymieszane');
+                }
+            });
+            
+            // Funkcje
+            function updateLessonButtons() {
+                lessonButtonsContainer.innerHTML = '';
+                
+                if (!lessonsData[currentLevel] || lessonsData[currentLevel].length === 0) {
+                    const emptyMessage = document.createElement('p');
+                    emptyMessage.textContent = 'Brak dostępnych lekcji dla tego poziomu.';
+                    lessonButtonsContainer.appendChild(emptyMessage);
+                    return;
+                }
+                
+                lessonsData[currentLevel].forEach(lesson => {
+                    const button = document.createElement('button');
+                    button.className = 'lesson-btn';
+                    button.dataset.lessonId = lesson.id;
+                    button.textContent = lesson.title;
+                    
+                    // Dodanie informacji o postępie
+                    if (learnedWords[lesson.id]) {
+                        const progress = Math.round((learnedWords[lesson.id].length / lesson.words.length) * 100);
+                        if (progress === 100) {
+                            button.textContent += ' ✓';
+                        } else {
+                            button.textContent += ` (${progress}%)`;
+                        }
+                    }
+                    
+                    button.addEventListener('click', function() {
+                        document.querySelectorAll('.lesson-btn').forEach(btn => btn.classList.remove('active'));
+                        this.classList.add('active');
+                        const selectedLesson = lessonsData[currentLevel].find(l => l.id === this.dataset.lessonId);
+                        loadFlashcards(selectedLesson);
+                    });
+                    
+                    lessonButtonsContainer.appendChild(button);
+                });
+            }
+            
+            function loadFlashcards(lesson) {
+                currentLesson = lesson;
+                currentLessonTitle.textContent = lesson.title;
+                
+                // Pokaż loader
+                flashcardsGrid.innerHTML = '';
+                loader.style.display = 'block';
+                
+                // Symulacja ładowania (można usunąć w produkcji)
+                setTimeout(() => {
+                    // Ukryj loader
+                    loader.style.display = 'none';
+                    
+                    // Utwórz fiszki
+                    lesson.words.forEach((word, index) => {
+                        const isLearned = learnedWords[lesson.id] && learnedWords[lesson.id].includes(index);
+                        
+                        const flashcard = document.createElement('div');
+                        flashcard.className = 'flashcard';
+                        if (isLearned) {
+                            flashcard.classList.add('learned');
+                        }
+                        flashcard.dataset.index = index;
+                        
+                        const flashcardInner = document.createElement('div');
+                        flashcardInner.className = 'flashcard-inner';
+                        
+                        // Przednia strona (angielski)
+                        const flashcardFront = document.createElement('div');
+                        flashcardFront.className = 'flashcard-front';
+                        
+                        const engWord = document.createElement('div');
+                        engWord.className = 'word';
+                        engWord.textContent = word.eng;
+                        
+                        const engPronunciation = document.createElement('div');
+                        engPronunciation.className = 'pronunciation';
+                        engPronunciation.textContent = word.pronunciation;
+                        
+                        const engSoundBtn = document.createElement('button');
+                        engSoundBtn.className = 'sound-btn';
+                        engSoundBtn.innerHTML = '&#128266;';
+                        engSoundBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            speak(word.eng, 'en-US');
+                        });
+                        
+                        const frontNote = document.createElement('div');
+                        frontNote.className = 'flashcard-note';
+                        frontNote.textContent = 'Kliknij, aby obrócić';
+                        
+                        flashcardFront.appendChild(engWord);
+                        flashcardFront.appendChild(engPronunciation);
+                        flashcardFront.appendChild(engSoundBtn);
+                        flashcardFront.appendChild(frontNote);
+                        
+                        // Tylna strona (polski)
+                        const flashcardBack = document.createElement('div');
+                        flashcardBack.className = 'flashcard-back';
+                        
+                        const plWord = document.createElement('div');
+                        plWord.className = 'word';
+                        plWord.textContent = word.pl;
+                        
+                        const plSoundBtn = document.createElement('button');
+                        plSoundBtn.className = 'sound-btn';
+                        plSoundBtn.innerHTML = '&#128266;';
+                        plSoundBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            speak(word.pl, 'pl-PL');
+                        });
+                        
+                        const learnBtn = document.createElement('button');
+                        learnBtn.className = 'sound-btn';
+                        learnBtn.innerHTML = isLearned ? '&#10003;' : '&#9734;';
+                        learnBtn.title = isLearned ? 'Oznacz jako nieznane' : 'Oznacz jako nauczone';
+                        learnBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            toggleLearnedStatus(lesson.id, index);
+                        });
+                        
+                        flashcardBack.appendChild(plWord);
+                        flashcardBack.appendChild(plSoundBtn);
+                        flashcardBack.appendChild(learnBtn);
+                        
+                        // Złożenie fiszki
+                        flashcardInner.appendChild(flashcardFront);
+                        flashcardInner.appendChild(flashcardBack);
+                        flashcard.appendChild(flashcardInner);
+                        
+                        // Obsługa kliknięcia (obrót fiszki)
+                        flashcard.addEventListener('click', function() {
+                            this.classList.toggle('flipped');
+                        });
+                        
+                        flashcardsGrid.appendChild(flashcard);
+                    });
+                    
+                    updateProgress();
+                }, 500);
+            }
+            
+            function resetFlashcards() {
+                flashcardsGrid.innerHTML = '';
+                currentLessonTitle.textContent = 'Wybierz lekcję';
+                progressInfo.textContent = '0/0';
+                progressBar.style.width = '0%';
+                currentLesson = null;
+            }
+            
+            function toggleLearnedStatus(lessonId, wordIndex) {
+                if (!learnedWords[lessonId]) {
+                    learnedWords[lessonId] = [];
+                }
+                
+                const index = learnedWords[lessonId].indexOf(wordIndex);
+                if (index === -1) {
+                    // Dodaj do nauczonych
+                    learnedWords[lessonId].push(wordIndex);
+                    document.querySelector(`.flashcard[data-index="${wordIndex}"]`).classList.add('learned');
+                    document.querySelector(`.flashcard[data-index="${wordIndex}"] .flashcard-back button:last-child`).innerHTML = '&#10003;';
+                    showToast('Słowo oznaczone jako nauczone');
+                } else {
+                    // Usuń z nauczonych
+                    learnedWords[lessonId].splice(index, 1);
+                    document.querySelector(`.flashcard[data-index="${wordIndex}"]`).classList.remove('learned');
+                    document.querySelector(`.flashcard[data-index="${wordIndex}"] .flashcard-back button:last-child`).innerHTML = '&#9734;';
+                    showToast('Oznaczenie usunięte');
+                }
+                
+                localStorage.setItem('learnedWords', JSON.stringify(learnedWords));
+                updateProgress();
+                updateLessonButtons(); // Aktualizacja przycisków lekcji z postępem
+            }
+            
+            function updateProgress() {
+                if (!currentLesson) return;
+                
+                const lessonId = currentLesson.id;
+                const total = currentLesson.words.length;
+                const learned = learnedWords[lessonId] ? learnedWords[lessonId].length : 0;
+                const percentage = total > 0 ? Math.round((learned / total) * 100) : 0;
+                
+                progressInfo.textContent = `${learned}/${total} (${percentage}%)`;
+                progressBar.style.width = `${percentage}%`;
+            }
+            
+            function speak(text, lang) {
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = lang;
+                    utterance.rate = 0.9; // Nieco wolniejsza wymowa
+                    window.speechSynthesis.speak(utterance);
+                } else {
+                    showToast('Przepraszamy, Twoja przeglądarka nie obsługuje funkcji syntezatora mowy.');
+                }
+            }
+            
+            function showToast(message) {
+                toast.textContent = message;
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+            
+            // Funkcja do mieszania tablicy (algorytm Fisher-Yates)
+            function shuffleArray(array) {
+                let currentIndex = array.length, randomIndex;
+                
+                while (currentIndex !== 0) {
+                    randomIndex = Math.floor(Math.random() * currentIndex);
+                    currentIndex--;
+                    
+                    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+                }
+                
+                return array;
+            }
+        });
+    </script>
+</body>
+</html>
